@@ -1,3 +1,12 @@
+export const getAirlineById = id =>
+  airlines.find(airline => airline.id === id).name;
+
+export const getAirportByCode = code =>
+  airports.find(airport => airport.code === code).name;
+
+export const createIdFromRoutes = route =>
+  route.airline + route.src + route.dest;
+
 const routes = [
   { airline: 24, src: 'DFW', dest: 'XNA' },
   { airline: 24, src: 'DFW', dest: 'FWA' },

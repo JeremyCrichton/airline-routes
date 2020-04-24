@@ -1,22 +1,27 @@
 import React from 'react';
 import routes from '../data/data';
+import {
+  createIdFromRoutes,
+  getAirlineById,
+  getAirportByCode,
+} from '../data/data';
 
-const Table = () => {
+const Table = ({ columns }) => {
   return (
     <table>
       <thead>
         <tr>
-          <th>Airline</th>
-          <th>Source</th>
-          <th>destination</th>
+          {columns.map(column => (
+            <th>{column.name}</th>
+          ))}
         </tr>
       </thead>
       <tbody>
         {routes.routes.map(route => (
-          <tr>
-            <td>{route.airline}</td>
-            <td>{route.src}</td>
-            <td>{route.dest}</td>
+          <tr key={createIdFromRoutes(route)}>
+            <td>{getAirlineById(route.airline)}</td>
+            <td>{getAirportByCode(route.src)}</td>
+            <td>{getAirportByCode(route.dest)}</td>
           </tr>
         ))}
       </tbody>
