@@ -3,6 +3,7 @@ import './App.css';
 
 import data from './data/data';
 import Table from './components/Table';
+import Select from './components/Select';
 
 const columns = [
   { name: 'Airline', property: 'airline' },
@@ -11,8 +12,8 @@ const columns = [
 ];
 
 const App = () => {
-  const [filterByAirlineId, setFilterByAirlineId] = useState();
   const [rows, setRows] = useState(data.routes);
+  const [filterByAirlineId, setFilterByAirlineId] = useState();
 
   useEffect(() => {
     setRows(
@@ -26,17 +27,14 @@ const App = () => {
     <div className='App'>
       <h2>Select routes by airline</h2>
       <div>
-        <select
+        <Select
+          options={data.airlines}
+          valueKey='id'
+          titleKey='name'
+          allTitle='All Airlines'
           value={filterByAirlineId}
-          onChange={e => setFilterByAirlineId(parseInt(e.target.value, 10))}
-        >
-          <option value=''>All airlines</option>
-          {data.airlines.map(airline => (
-            <option key={airline.id} value={airline.id}>
-              {airline.name}
-            </option>
-          ))}
-        </select>
+          onSelect={setFilterByAirlineId}
+        />
       </div>
       <Table
         className='routes-table'
