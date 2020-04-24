@@ -14,14 +14,30 @@ const columns = [
 const App = () => {
   const [rows, setRows] = useState(data.routes);
   const [filterByAirlineId, setFilterByAirlineId] = useState();
+  const [filterByAirportId, setFilterByAirportId] = useState();
 
   useEffect(() => {
     setRows(
-      filterByAirlineId
-        ? data.routes.filter(route => route.airline === filterByAirlineId)
-        : data.routes
+      data.routes.filter(route => {
+        const filterByAirline = route.airline.toString() === filterByAirlineId;
+        const filterByAirport =
+          route.src === filterByAirportId || route.dest === filterByAirportId;
+
+        if (!filterByAirlineId && !filterByAirportId) {
+          return true;
+        } else if (!filterByAirlineId) {
+          return filterByAirport;
+        } else if (!filterByAirportId) {
+          return filterByAirline;
+        }
+        return filterByAirline && filterByAirport;
+      })
     );
-  }, [filterByAirlineId]);
+  }, [filterByAirlineId, filterByAirportId]);
+
+  const airportsToFilter = data.airports.sort((a, b) =>
+    a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
+  );
 
   return (
     <div className='App'>
@@ -34,6 +50,17 @@ const App = () => {
           allTitle='All Airlines'
           value={filterByAirlineId}
           onSelect={setFilterByAirlineId}
+        />
+      </div>
+      <h2>Select routes by airport</h2>
+      <div>
+        <Select
+          options={airportsToFilter}
+          valueKey='code'
+          titleKey='name'
+          allTitle='All Airports'
+          value={filterByAirportId}
+          onSelect={setFilterByAirportId}
         />
       </div>
       <Table
