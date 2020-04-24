@@ -4,7 +4,7 @@ import TableRow from './TableRow';
 import { createIdFromRoutes } from '../data/data';
 
 const Table = ({ columns, rows, perPage }) => {
-  const [routesPerPage, setRoutesPerPage] = useState(perPage);
+  const [routesPerPage] = useState(perPage);
   const [currentPage, setCurrentPage] = useState(0);
   const [routesToDisplay, setRoutesToDisplay] = useState(rows.slice(0, 24));
 
@@ -20,10 +20,11 @@ const Table = ({ columns, rows, perPage }) => {
         currentPage * routesPerPage + routesPerPage
       )
     );
-  }, [currentPage, routesPerPage]);
+  }, [currentPage, routesPerPage, rows]);
 
   return (
     <div>
+      <h2>Routes</h2>
       <table>
         <thead>
           <tr>

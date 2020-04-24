@@ -1,10 +1,6 @@
 import React from 'react';
 
-import {
-  createIdFromRoutes,
-  getAirlineById,
-  getAirportByCode,
-} from '../data/data';
+import { getAirlineById, getAirportByCode } from '../data/data';
 
 const TableRow = ({ route }) => {
   return (
