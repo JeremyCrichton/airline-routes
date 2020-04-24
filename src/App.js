@@ -39,6 +39,11 @@ const App = () => {
     a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
   );
 
+  const clearFilters = () => {
+    setFilterByAirlineId('');
+    setFilterByAirportId('');
+  };
+
   return (
     <div className='App'>
       <h2>Select routes by airline</h2>
@@ -63,6 +68,8 @@ const App = () => {
           onSelect={setFilterByAirportId}
         />
       </div>
+      <button onClick={clearFilters}>Clear Filters</button>
+      <h2>Routes</h2>
       <Table
         className='routes-table'
         columns={columns}

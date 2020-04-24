@@ -24,7 +24,6 @@ const Table = ({ columns, rows, perPage }) => {
 
   return (
     <div>
-      <h2>Routes</h2>
       <table>
         <thead>
           <tr>
