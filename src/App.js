@@ -4,6 +4,7 @@ import './App.css';
 import data from './data/data';
 import Table from './components/Table';
 import Select from './components/Select';
+import Map from './components/Map';
 
 const COLUMNS = [
   { name: 'Airline', property: 'airline' },
@@ -68,6 +69,7 @@ const App = () => {
 
   return (
     <div className='App'>
+      <Map routes={filteredRoutes} />
       <h2>Select routes by airline</h2>
       <div>
         <Select
