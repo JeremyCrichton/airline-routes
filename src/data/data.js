@@ -4,6 +4,7 @@ export const getAirlineById = id =>
 export const getAirportByCode = code =>
   airports.find(airport => airport.code === code).name;
 
+// Get a unique ID for each route for rendering a list of routes
 export const createIdFromRoutes = route =>
   route.airline + route.src + route.dest;
 

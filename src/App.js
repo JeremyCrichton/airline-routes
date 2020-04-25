@@ -5,43 +5,65 @@ import data from './data/data';
 import Table from './components/Table';
 import Select from './components/Select';
 
-const columns = [
+const COLUMNS = [
   { name: 'Airline', property: 'airline' },
   { name: 'Source Airport', property: 'src' },
   { name: 'Destination Airport', property: 'dest' },
 ];
 
 const App = () => {
-  const [rows, setRows] = useState(data.routes);
-  const [filterByAirlineId, setFilterByAirlineId] = useState();
-  const [filterByAirportId, setFilterByAirportId] = useState();
+  const [filterByAirlineId, setFilterByAirlineId] = useState('all');
+  const [filterByAirportCode, setFilterByAirportCode] = useState('all');
+  const [filteredRoutes, setFilteredRoutes] = useState(data.routes);
+  const [filteredAirlines, setFilteredAirlines] = useState(data.airlines);
+  const [filteredAirports, setFilteredAirports] = useState(data.airports);
 
+  // Update routes to display whenever either select is changed
   useEffect(() => {
-    setRows(
-      data.routes.filter(route => {
-        const filterByAirline = route.airline.toString() === filterByAirlineId;
-        const filterByAirport =
-          route.src === filterByAirportId || route.dest === filterByAirportId;
+    const routeHasSelectedAirport = route => {
+      if (filterByAirportCode === 'all') return true;
+      return (
+        route.src === filterByAirportCode || route.dest === filterByAirportCode
+      );
+    };
 
-        if (!filterByAirlineId && !filterByAirportId) {
-          return true;
-        } else if (!filterByAirlineId) {
-          return filterByAirport;
-        } else if (!filterByAirportId) {
-          return filterByAirline;
-        }
-        return filterByAirline && filterByAirport;
-      })
+    const routeHasSelectedAirline = route => {
+      if (filterByAirlineId === 'all') return true;
+      return route.airline === parseInt(filterByAirlineId, 10);
+    };
+
+    const routes = data.routes.filter(
+      route => routeHasSelectedAirport(route) && routeHasSelectedAirline(route)
     );
-  }, [filterByAirlineId, filterByAirportId]);
 
-  const airportsToFilter = data.airports.sort((a, b) =>
-    a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
-  );
+    setFilteredRoutes(routes);
+  }, [filterByAirlineId, filterByAirportCode]);
+
+  // Update select options whenever routes to display are updated
+  useEffect(() => {
+    const getFilteredAirlines = routes => {
+      if (filterByAirportCode === 'all') return data.airlines;
+      return data.airlines.filter(airline =>
+        routes.some(route => route.airline === airline.id)
+      );
+    };
+
+    const getFilteredAirports = routes => {
+      if (filterByAirlineId === 'all') return data.airports;
+      return data.airports.filter(airport =>
+        routes.some(
+          route => route.src === airport.code || route.des === airport.code
+        )
+      );
+    };
+
+    setFilteredAirlines(getFilteredAirlines(filteredRoutes));
+    setFilteredAirports(getFilteredAirports(filteredRoutes));
+  }, [filteredRoutes, filterByAirlineId, filterByAirportCode]);
 
   const clearFilters = () => {
-    setFilterByAirlineId('');
-    setFilterByAirportId('');
+    setFilterByAirlineId('all');
+    setFilterByAirportCode('all');
   };
 
   return (
@@ -49,7 +71,7 @@ const App = () => {
       <h2>Select routes by airline</h2>
       <div>
         <Select
-          options={data.airlines}
+          options={filteredAirlines}
           valueKey='id'
           titleKey='name'
           allTitle='All Airlines'
@@ -60,20 +82,20 @@ const App = () => {
       <h2>Select routes by airport</h2>
       <div>
         <Select
-          options={airportsToFilter}
+          options={filteredAirports}
           valueKey='code'
           titleKey='name'
           allTitle='All Airports'
-          value={filterByAirportId}
-          onSelect={setFilterByAirportId}
+          value={filterByAirportCode}
+          onSelect={setFilterByAirportCode}
         />
       </div>
       <button onClick={clearFilters}>Clear Filters</button>
       <h2>Routes</h2>
       <Table
         className='routes-table'
-        columns={columns}
-        rows={rows}
+        columns={COLUMNS}
+        rows={filteredRoutes}
         format=''
         perPage={25}
       />
